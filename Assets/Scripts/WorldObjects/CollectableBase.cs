@@ -26,6 +26,10 @@ public class CollectableBase : MonoBehaviour
         Game.current.PlayAudio(_data.collectSound);
 
         gameObject.SetActive(false);
+        if(_data.objectToSpawn)
+        {
+            Instantiate(_data.objectToSpawn, transform.position, Quaternion.identity);
+        }
     }
 }
 
@@ -36,4 +40,5 @@ public class CoinData
     public Sprite sprite;
     public int score;
     public AudioClip collectSound;
+    public GameObject objectToSpawn;
 }

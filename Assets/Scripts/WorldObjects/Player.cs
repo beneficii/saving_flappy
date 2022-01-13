@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
     {
         Instantiate(prefabExplosion, transform.position, transform.rotation);
         Destroy(gameObject, 0.1f);
-        Game.current.GameOver();
+        Game.current.GameOver(false);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

@@ -8,17 +8,19 @@ using TMPro;
 public class Game : MonoBehaviour
 {
     public TextMeshProUGUI txtScore;
-    public TextMeshProUGUI txtScoreShadow;
 
     public Player player;
 
     public static Game current;
 
-
     public GameObject readyOverlay;
     public GameObject playOverlay;
     public GameObject gameOverOverlay;
+    public GameObject victoryOverlay;
     public GameObject highScoreTitle;
+    public GameObject highScoreTitleWin;
+
+    public FloatingText prefabFloater;
 
     AudioSource _audio;
 
@@ -34,7 +36,7 @@ public class Game : MonoBehaviour
         set
         {
             _score = value;
-            txtScore.text = txtScoreShadow.text = $"{value} ({_best})";
+            txtScore.text = $"Damage: {value}";
         }
     }
     int _best;
@@ -70,11 +72,20 @@ public class Game : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void GameOver()
+    public void GameOver(bool isWin)
     {
         bool isRecord = SaveScore();
-        State = GameState.GameOver;
-        highScoreTitle.SetActive(isRecord);
+
+        if(isWin)
+        {
+            State = GameState.Win;
+            highScoreTitleWin.SetActive(isRecord);
+        }
+        else
+        {
+            State = GameState.GameOver;
+            highScoreTitle.SetActive(isRecord);
+        }
     }
 
     public void StartPlaying()
@@ -95,6 +106,11 @@ public class Game : MonoBehaviour
         return false;
     }
 
+    public FloatingText ShowFloater(string msg, Vector3 position, Transform parent = null)
+    {
+        return FloatingText.Create(prefabFloater, msg, position, parent);
+    }
+
     GameState _state;
     public GameState State
     {
@@ -105,6 +121,7 @@ public class Game : MonoBehaviour
             readyOverlay.SetActive(value == GameState.GetReady);
             playOverlay.SetActive(value == GameState.Playing);
             gameOverOverlay.SetActive(value == GameState.GameOver);
+            victoryOverlay.SetActive(value == GameState.Win);
 
             Time.timeScale = (value == GameState.GetReady) ? 0f:1f;
         }
@@ -120,6 +137,7 @@ public enum GameState
 {
     GetReady,
     Playing,
-    GameOver
+    GameOver,
+    Win,
 }
 
